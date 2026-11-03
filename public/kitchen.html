@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>廚房後台 - 查看訂單</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --ios-blue: #007AFF;
+      --ios-red: #FF3B30;
+      --ios-green: #34C759;
+      --ios-gray: #8E8E93;
+      --ios-light-gray: #F2F2F7;
+    }
+
+    body {
+      background-color: var(--ios-light-gray);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .card {
+      border-radius: 13px;
+      border: none;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    .btn {
+      border-radius: 8px;
+      padding: 8px 16px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .btn-primary {
+      background-color: var(--ios-blue);
+      border-color: var(--ios-blue);
+    }
+
+    .btn-danger {
+      background-color: var(--ios-red);
+      border-color: var(--ios-red);
+    }
+
+    .btn-success {
+      background-color: var(--ios-green);
+      border-color: var(--ios-green);
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: slideUp 0.5s ease forwards;
+    }
+
+    @keyframes slideUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .list-group-item {
+      border: none;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      padding: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    .list-group-item:last-child {
+      border-bottom: none;
+    }
+
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+
+    .status-pending {
+      background-color: #FFD60A;
+      color: #000;
+    }
+
+    .status-completed {
+      background-color: var(--ios-green);
+      color: white;
+    }
+
+    .nav-ios {
+      background-color: rgba(255,255,255,0.8);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 1rem 0;
+    }
+
+    .modal-content {
+      border-radius: 13px;
+      border: none;
+    }
+
+    .modal-header {
+      border-bottom: none;
+      padding: 20px;
+    }
+
+    .modal-footer {
+      border-top: none;
+      padding: 20px;
+    }
+
+    /* 在 <style> 標籤中添加以下 CSS */
+    .order-switch-container {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .order-switch-checkbox {
+      display: none;
+    }
+
+    .order-switch-label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      padding-left: 50px;
+      user-select: none;
+    }
+
+    .order-switch-inner {
+      position: absolute;
+      left: 0;
+      width: 42px;
+      height: 24px;
+      background-color: #e9ecef;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .order-switch-switch {
+      position: absolute;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background-color: white;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .order-switch-text {
+      margin-left: 8px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .order-switch-checkbox:checked + .order-switch-label .order-switch-inner {
+      background-color: var(--ios-blue);
+    }
+
+    .order-switch-checkbox:checked + .order-switch-label .order-switch-switch {
+      transform: translateX(18px);
+    }
+
+    /* 懸停效果 */
+    .order-switch-label:hover .order-switch-inner {
+      opacity: 0.9;
+    }
+
+    /* 禁用狀態 */
+    .order-switch-checkbox:disabled + .order-switch-label {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-ios mb-4">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="h4 mb-0">廚房後台</h1>
+        <div>
+          <a href="/" class="btn btn-primary">返回點餐頁面</a>
+          <a href="admin.html" class="btn btn-secondary ms-2">管理菜單</a>
+          <div class="order-switch-container ms-2">
+            <input class="order-switch-checkbox" type="checkbox" id="submitToggle" checked>
+            <label class="order-switch-label" for="submitToggle">
+              <span class="order-switch-inner"></span>
+              <span class="order-switch-switch"></span>
+              <span class="order-switch-text">允許用戶提交訂單</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h2>待處理訂單</h2>
+        <div id="pendingOrders" class="row">
+          <!-- 待處理訂單卡片將動態生成 -->
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h2>已完成訂單</h2>
+        <div id="completedOrders" class="row">
+          <!-- 已完成訂單卡片將動態生成 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 訂單詳情彈出視窗 -->
+  <div class="modal fade" id="orderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">訂單詳情</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- 訂單詳情將在 JavaScript 中動態填充 -->
+        </div>
+        <div class="modal-footer">
+          <div id="orderActions"></div>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let currentOrder = null;
+    const orderModal = new bootstrap.Modal(document.getElementById('orderModal'));
+
+    document.getElementById('submitToggle').addEventListener('change', async function() {
+      const canSubmitOrder = this.checked;
+      try {
+        const response = await fetch('/update-submit-status', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ canSubmitOrder }),
+        });
+        const data = await response.json();
+        console.log(data.message);
+      } catch (error) {
+        console.error('更新訂單提交狀態失敗:', error);
+      }
+    });
+
+    // 載入訂單
+    async function fetchKitchenOrders() {
+      try {
+        const response = await fetch('/kitchen-orders');
+        const orders = await response.json();
+        
+        const pendingOrdersContainer = document.getElementById('pendingOrders');
+        const completedOrdersContainer = document.getElementById('completedOrders');
+        
+        pendingOrdersContainer.innerHTML = '';
+        completedOrdersContainer.innerHTML = '';
+        
+        orders.forEach(order => {
+          const orderCard = createOrderCard(order);
+          if (order.status === 'pending') {
+            pendingOrdersContainer.appendChild(orderCard);
+          } else if (order.status === 'completed') {
+            completedOrdersContainer.appendChild(orderCard);
+          }
+        });
+      } catch (error) {
+        console.error('載入訂單失敗:', error);
+      }
+    }
+
+    // 建立訂單卡片
+    function createOrderCard(order) {
+      const card = document.createElement('div');
+      card.className = 'col-12 mb-3';
+      card.innerHTML = `
+        <div class="card order-card fade-in">
+          <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">桌號：${order.tableNumber} - 訂單 #${order.id}</h5>
+            ${order.status === 'completed' ? '<span class="status-badge status-completed">已完成</span>' : 
+                                          '<span class="status-badge status-pending">處理中</span>'}
+          </div>
+          <div class="card-body">
+            <small class="text-muted">訂單時間：${new Date(order.timestamp).toLocaleString()}</small>
+            <ul class="list-group list-group-flush mt-2">
+              ${order.orders.map(item => `
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  ${item.name} x${item.quantity}
+                  <span>${(item.price * item.quantity).toFixed(2)} 元</span>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        </div>
+      `;
+
+      // 添加點擊事件
+      card.querySelector('.card').addEventListener('click', () => showOrderModal(order));
+      return card;
+    }
+
+    // 顯示訂單詳情彈出視窗
+    function showOrderModal(order) {
+      currentOrder = order;
+      const modalBody = document.querySelector('#orderModal .modal-body');
+      const modalActions = document.getElementById('orderActions');
+
+      modalBody.innerHTML = `
+        <div class="order-details">
+          <h6>桌號：${order.tableNumber}</h6>
+          <p class="text-muted">訂單編號：#${order.id}</p>
+          <p class="text-muted">訂單時間：${new Date(order.timestamp).toLocaleString()}</p>
+          <div class="order-items mt-3">
+            <h6>訂單內容：</h6>
+            <ul class="list-group">
+              ${order.orders.map(item => `
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  ${item.name} x${item.quantity}
+                  <span>${(item.price * item.quantity).toFixed(2)} 元</span>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+          <div class="mt-3">
+            <strong>總金額：${order.orders.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)} 元</strong>
+          </div>
+        </div>
+      `;
+
+      modalActions.innerHTML = order.status === 'pending' ? `
+        <button type="button" class="btn btn-success" onclick="completeOrder(${order.id})">完成訂單</button>
+        <button type="button" class="btn btn-danger" onclick="deleteOrder(${order.id})">刪除訂單</button>
+      ` : '';
+
+      orderModal.show();
+    }
+
+    // 完成訂單
+    async function completeOrder(orderId) {
+      try {
+        const response = await fetch(`/chef/complete-order/${orderId}`, { method: 'POST' });
+        if (response.ok) {
+          orderModal.hide();
+          fetchKitchenOrders();
+        } else {
+          const result = await response.json();
+          alert('完成訂單失敗：' + result.message);
+        }
+      } catch (error) {
+        console.error('完成訂單失敗:', error);
+        alert('完成訂單失敗，請檢查控制台以獲取詳細資訊。');
+      }
+    }
+
+    // 刪除訂單
+    async function deleteOrder(orderId) {
+      if (!confirm('確定要刪除此訂單嗎？')) return;
+
+      try {
+        const response = await fetch(`/chef/delete-order/${orderId}`, { method: 'DELETE' });
+        if (response.ok) {
+          orderModal.hide();
+          fetchKitchenOrders();
+        } else {
+          const result = await response.json();
+          alert('刪除訂單失敗：' + result.message);
+        }
+      } catch (error) {
+        console.error('刪除訂單失敗:', error);
+        alert('刪除訂單失敗，請檢查控制台以獲取詳細資訊。');
+      }
+    }
+
+    async function initSubmitToggle() {
+      try {
+        const response = await fetch('/get-submit-status');
+        const data = await response.json();
+        document.getElementById('submitToggle').checked = data.canSubmitOrder;
+      } catch (error) {
+        console.error('獲取訂單提交狀態失敗:', error);
+      }
+    }
+
+    // 初始載入訂單並定時更新
+    fetchKitchenOrders();
+    setInterval(fetchKitchenOrders, 10000);
+  </script>
+</body>
+</html>

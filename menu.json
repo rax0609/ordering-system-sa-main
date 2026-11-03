@@ -1,0 +1,117 @@
+[
+  {
+    "category": "燒烤時蔬",
+    "items": [
+      {
+        "name": "黃金泡菜",
+        "price": 80,
+        "status": "有"
+      },
+      {
+        "name": "秘料烤洋芋",
+        "price": 80,
+        "status": "有"
+      },
+      {
+        "name": "慢火烤香菇",
+        "price": 80,
+        "status": "有"
+      },
+      {
+        "name": "虎皮烤青椒",
+        "price": 80,
+        "status": "有"
+      },
+      {
+        "name": "嚴選大櫛瓜",
+        "price": 120,
+        "status": "有"
+      }
+    ]
+  },
+  {
+    "category": "職人燒烤",
+    "items": [
+      {
+        "name": "A5和牛莎朗",
+        "price": 360,
+        "status": "有"
+      },
+      {
+        "name": "香料牛肋條",
+        "price": 180,
+        "status": "有"
+      },
+      {
+        "name": "香草松板豬",
+        "price": 320,
+        "status": "有"
+      },
+      {
+        "name": "香蒜菲力牛",
+        "price": 360,
+        "status": "有"
+      }
+    ]
+  },
+  {
+    "category": "特色經典",
+    "items": [
+      {
+        "name": "月亮蝦餅",
+        "price": 280,
+        "status": "有"
+      },
+      {
+        "name": "起司炸薯條",
+        "price": 180,
+        "status": "有"
+      },
+      {
+        "name": "泰式涼拌炸彈",
+        "price": 180,
+        "status": "有"
+      },
+      {
+        "name": "椰香紅咖哩雞",
+        "price": 210,
+        "status": "有"
+      },
+      {
+        "name": "椰香綠咖哩雞",
+        "price": 210,
+        "status": "有"
+      },
+      {
+        "name": "泰式打拋豬肉",
+        "price": 180,
+        "status": "有"
+      }
+    ]
+  },
+  {
+    "category": "主食熱炒",
+    "items": [
+      {
+        "name": "清炒水蓮",
+        "price": 120,
+        "status": "有"
+      },
+      {
+        "name": "清炒高麗菜",
+        "price": 120,
+        "status": "有"
+      },
+      {
+        "name": "特色海鮮炒飯",
+        "price": 210,
+        "status": "有"
+      },
+      {
+        "name": "海鮮炒河粉",
+        "price": 210,
+        "status": "有"
+      }
+    ]
+  }
+]

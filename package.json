@@ -1,0 +1,25 @@
+{
+  "name": "simple-ordering-system",
+  "version": "1.0.0",
+  "description": "A lightweight restaurant / event table ordering and kitchen management system built with Node.js and Express.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "ordering-system",
+    "restaurant",
+    "pos",
+    "kitchen-display",
+    "express",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^18.0.9",
+    "express": "^4.21.1",
+    "multer": "^1.4.5-lts.1"
+  }
+}

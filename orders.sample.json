@@ -1,0 +1,88 @@
+[
+  {
+    "id": 1,
+    "tableNumber": 12,
+    "orders": [
+      {
+        "name": "香草松板豬",
+        "quantity": 1,
+        "price": 320
+      },
+      {
+        "name": "慢火烤香菇",
+        "quantity": 1,
+        "price": 80
+      }
+    ],
+    "total": 400,
+    "timestamp": "2024-11-20T17:55:34.869Z",
+    "status": "pending"
+  },
+  {
+    "id": 2,
+    "tableNumber": 11,
+    "orders": [
+      {
+        "name": "虎皮烤青椒",
+        "quantity": 1,
+        "price": 80
+      },
+      {
+        "name": "特色海鮮炒飯",
+        "quantity": 1,
+        "price": 210
+      },
+      {
+        "name": "椰香紅咖哩雞",
+        "quantity": 1,
+        "price": 210
+      },
+      {
+        "name": "椰香綠咖哩雞",
+        "quantity": 1,
+        "price": 210
+      },
+      {
+        "name": "月亮蝦餅",
+        "quantity": 1,
+        "price": 280
+      }
+    ],
+    "total": 990,
+    "timestamp": "2024-11-20T17:55:46.240Z",
+    "status": "pending"
+  },
+  {
+    "id": 3,
+    "tableNumber": 1,
+    "orders": [
+      {
+        "name": "A5和牛莎朗",
+        "quantity": 1,
+        "price": 360
+      }
+    ],
+    "total": 360,
+    "timestamp": "2024-11-20T18:00:53.778Z",
+    "status": "pending"
+  },
+  {
+    "id": 4,
+    "tableNumber": 1,
+    "orders": [
+      {
+        "name": "香草松板豬",
+        "quantity": 1,
+        "price": 320
+      },
+      {
+        "name": "慢火烤香菇",
+        "quantity": 1,
+        "price": 80
+      }
+    ],
+    "total": 400,
+    "timestamp": "2024-11-20T18:07:55.537Z",
+    "status": "pending"
+  }
+]

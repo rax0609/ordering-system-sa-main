@@ -1,0 +1,26 @@
+# 依賴套件
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 環境變數與機密設定
+.env
+.env.local
+
+# 運行時動態資料（開源僅保留範例 orders.sample.json）
+orders.json
+*.tmp
+
+# 上傳之菜單圖片（保留目錄結構，排除運行時上傳的圖片）
+public/menu_images/*
+!public/menu_images/.gitkeep
+
+# 作業系統暫存檔
+.DS_Store
+Thumbs.db
+
+# 編輯器設定
+.vscode/
+.idea/
+

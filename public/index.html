@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>點餐系統</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      :root {
+          --gold: #D4AF37;
+          --gold-light: #FFD700;
+          --dark-bg: #0A0A0A;
+          --dark-card: #1A1A1A;
+      }
+  
+      body {
+          background-color: var(--dark-bg);
+          color: #fff;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+      }
+  
+      .hero-banner {
+          width: 100%;
+          position: relative;
+          background-color: var(--dark-bg);
+          margin-bottom: 2rem;
+      }
+  
+      .hero-image {
+          width: 100%;
+          height: auto;
+          display: block;
+          max-height: 100vh;
+          object-fit: contain;
+      }
+  
+      .content-wrapper {
+          padding-top: 2rem;
+          background: linear-gradient(to bottom, 
+              rgba(10, 10, 10, 0) 0%,
+              rgba(10, 10, 10, 1) 100%);
+          margin-top: -2rem;
+          position: relative;
+      }
+  
+      .page-title {
+          color: var(--gold);
+          text-align: center;
+          font-size: 2.5rem;
+          margin: 2rem 0;
+          font-weight: 600;
+          text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+      }
+  
+      /* Card Styles */
+      .card {
+          background-color: rgba(26, 26, 26, 0.95);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(212, 175, 55, 0.2);
+          box-shadow: 0 4px 15px rgba(212, 175, 55, 0.1);
+          transition: all 0.3s ease;
+          margin-bottom: 2rem;
+          color: #fff;
+      }
+  
+      .card:hover {
+          border-color: var(--gold);
+          box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
+      }
+  
+      .card-header {
+          background-color: rgba(212, 175, 55, 0.1);
+          border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+          color: var(--gold);
+          padding: 1rem;
+      }
+  
+      .card-header h2 {
+          color: var(--gold);
+          margin: 0;
+          font-size: 1.5rem;
+      }
+  
+      .card-body {
+          color: #fff;
+          padding: 1.5rem;
+      }
+  
+      /* Button Styles */
+      .btn-primary {
+          background: linear-gradient(45deg, #B8860B, var(--gold));
+          border: none;
+          color: #000;
+          font-weight: 600;
+          transition: all 0.3s ease;
+      }
+  
+      .btn-primary:hover {
+          background: linear-gradient(45deg, var(--gold), #B8860B);
+          transform: translateY(-2px);
+          color: #000;
+      }
+  
+      .btn-secondary {
+          background-color: #6c757d;
+          border: none;
+          color: #fff;
+      }
+  
+      .btn-secondary:hover {
+          background-color: #5a6268;
+          color: #fff;
+      }
+  
+      /* Form Controls */
+      .form-control {
+          background-color: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(212, 175, 55, 0.2);
+          color: #fff;
+          padding: 0.75rem;
+      }
+  
+      .form-control:focus {
+          background-color: rgba(255, 255, 255, 0.15);
+          border-color: var(--gold);
+          box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+          color: #fff;
+      }
+  
+      .form-control:read-only {
+          background-color: rgba(255, 255, 255, 0.05);
+          color: #fff;
+      }
+  
+      .form-label {
+          color: var(--gold);
+          font-weight: 500;
+          margin-bottom: 0.5rem;
+      }
+  
+      /* List Group */
+      .list-group-item {
+          background-color: rgba(26, 26, 26, 0.95);
+          border: 1px solid rgba(212, 175, 55, 0.2);
+          color: #fff;
+          transition: all 0.3s ease;
+          padding: 1rem;
+      }
+  
+      .list-group-item:hover {
+          background-color: rgba(212, 175, 55, 0.1);
+          border-color: var(--gold);
+          cursor: pointer;
+      }
+  
+      /* Order Items */
+      .order-item {
+          background-color: rgba(26, 26, 26, 0.95);
+          border: 1px solid rgba(212, 175, 55, 0.25);
+          border-radius: 8px;
+          padding: 0.85rem 1rem;
+          margin-bottom: 0.75rem;
+          transition: all 0.25s ease;
+      }
+  
+      .order-item:hover {
+          border-color: var(--gold);
+          box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+      }
+
+      .order-item .item-name {
+          font-size: 1.05rem;
+          font-weight: 600;
+          color: #fff;
+          margin-bottom: 0.25rem;
+      }
+
+      .order-item .item-meta {
+          font-size: 0.95rem;
+      }
+
+      .order-item .btn-remove {
+          white-space: nowrap;
+          font-size: 0.85rem;
+          padding: 0.35rem 0.85rem;
+          border-radius: 6px;
+      }
+  
+      .price-tag {
+          color: var(--gold);
+          font-weight: 600;
+      }
+  
+      /* Modal Styles */
+      .modal-content {
+          background-color: var(--dark-card);
+          color: #fff;
+          border: 1px solid var(--gold);
+      }
+  
+      .modal-header {
+          border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+          padding: 1rem;
+      }
+  
+      .modal-footer {
+          border-top: 1px solid rgba(212, 175, 55, 0.2);
+          padding: 1rem;
+      }
+  
+      .modal-title {
+          color: var(--gold);
+          font-size: 1.25rem;
+      }
+  
+      .btn-close {
+          color: #fff;
+          filter: invert(1) grayscale(100%) brightness(200%);
+      }
+  
+      /* Toast Styles */
+      .toast-container {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          z-index: 1051;
+      }
+  
+      .toast {
+          background-color: rgba(26, 26, 26, 0.95);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          color: white;
+          border-radius: 8px;
+          border: 1px solid rgba(212, 175, 55, 0.2);
+      }
+  
+      .toast.success {
+          border-left: 4px solid #28a745;
+      }
+  
+      .toast.error {
+          border-left: 4px solid #dc3545;
+      }
+  
+      /* Remove Button */
+      .btn-remove {
+          background-color: #FF3B30;
+          border: none;
+          color: white;
+          transition: all 0.3s ease;
+      }
+  
+      .btn-remove:hover {
+          background-color: #FF453A;
+          transform: translateY(-2px);
+      }
+  
+      /* Responsive Styles */
+      @media (max-width: 768px) {
+          .hero-image {
+              max-height: 50vh;
+          }
+          
+          .page-title {
+              font-size: 2rem;
+          }
+      }
+  
+      /* Scrollbar Styles */
+      ::-webkit-scrollbar {
+          width: 8px;
+      }
+  
+      ::-webkit-scrollbar-track {
+          background: var(--dark-bg);
+      }
+  
+      ::-webkit-scrollbar-thumb {
+          background: var(--gold);
+          border-radius: 4px;
+      }
+  
+      /* Particle Effects */
+      .particles {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: -1;
+          pointer-events: none;
+      }
+  
+      .particle {
+          position: absolute;
+          background: rgba(212, 175, 55, 0.2);
+          border-radius: 50%;
+          pointer-events: none;
+          animation: float 5s infinite ease-in-out;
+      }
+  
+      @keyframes float {
+          0%, 100% {
+              transform: translateY(0) translateX(0);
+              opacity: 0;
+          }
+          25% {
+              opacity: 0.5;
+          }
+          50% {
+              transform: translateY(-20px) translateX(10px);
+              opacity: 0.8;
+          }
+          75% {
+              opacity: 0.5;
+          }
+      }
+  
+      /* Fade In Animation */
+      .fade-in {
+          animation: fadeIn 0.5s ease-in-out;
+      }
+  
+      @keyframes fadeIn {
+          from {
+              opacity: 0;
+              transform: translateY(10px);
+          }
+          to {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
+  
+      /* Additional Styles for Better Visibility */
+      h1, h2, h3, h4, h5, h6 {
+          color: var(--gold);
+      }
+  
+      #totalAmount {
+          color: var(--gold);
+          font-weight: bold;
+      }
+  
+      .modal-body {
+          color: #fff;
+          padding: 1.5rem;
+      }
+  
+      .text-muted {
+          color: rgba(255, 255, 255, 0.6) !important;
+      }
+  
+      .text-success {
+          color: #28a745 !important;
+      }
+  
+      .text-danger {
+          color: #dc3545 !important;
+      }
+
+      .text-gold {
+          color: var(--gold) !important;
+      }
+  </style>  
+</head>
+<body>
+  <div id="particles" class="particles"></div>
+  <!-- Hero Banner -->
+  <div class="hero-banner">
+    <img src="/hero-banner.jpg" alt="主視覺" class="hero-image">
+  </div>
+
+  <!-- 內容區域 -->
+  <div class="content-wrapper">
+      <div class="container">
+          <h1 class="page-title">點餐系統</h1>
+
+          <!-- 導航欄 -->
+          <nav class="mb-4">
+              <a href="user-order-status.html" class="btn btn-primary">查看我的訂單</a>
+          </nav>
+
+          <!-- 主要內容區 -->
+          <div class="row">
+              <!-- 左側菜單列表 -->
+              <div class="col-md-8">
+                  <div class="card mb-4 fade-in">
+                      <div class="card-header">
+                          <h2>菜單</h2>
+                      </div>
+                      <div class="card-body menu">
+                          <div id="menuList" class="row">
+                              <!-- 菜單項目將動態生成 -->
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <!-- 右側訂單表單 -->
+              <div class="col-md-4">
+                  <div class="card fade-in">
+                      <div class="card-header">
+                          <h2>提交訂單</h2>
+                      </div>
+                      <div class="card-body">
+                          <form id="orderForm">
+                              <div class="mb-3">
+                                  <label for="tableNumber" class="form-label">桌號：</label>
+                                  <input type="number" class="form-control" id="tableNumber" name="tableNumber" min="1" required>
+                              </div>
+                              
+                              <div id="orderItems">
+                                  <!-- 訂單項目將動態生成 -->
+                              </div>
+
+                              <!-- 總金額 -->
+                              <div class="mt-3">
+                                  <h4>總金額：<span id="totalAmount">0</span> 元</h4>
+                              </div>
+                              
+                              <!-- 提交按鈕 -->
+                              <div class="button-group">
+                                  <button type="submit" class="btn btn-primary w-100">提交訂單</button>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Toast 通知容器 -->
+  <div class="toast-container"></div>
+
+  <!-- 成功提示 Modal -->
+  <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title">
+                      <div class="modal-icon success">
+                          <i class="bi bi-check-lg"></i>
+                      </div>
+                      提交成功
+                  </h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" id="successModalBody"></div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">確定</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- 錯誤提示 Modal -->
+  <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title">
+                      <div class="modal-icon error">
+                          <i class="bi bi-exclamation-lg"></i>
+                      </div>
+                      提交失敗
+                  </h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" id="errorModalBody"></div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">關閉</button>
+              </div>
+          </div>
+      </div>
+  </div>
+    
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    
+    <script>
+       document.addEventListener('DOMContentLoaded', () => {
+        // 在原有程式碼開頭加入以下程式碼
+        function getTableNumberFromUrl() {
+            // 優先從 query parameter 取得（如 ?table=12）
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryTable = parseInt(urlParams.get('table') || urlParams.get('tableNumber'), 10);
+            if (!isNaN(queryTable) && queryTable > 0) {
+                return queryTable;
+            }
+
+            // 從路徑片段取得（支援 /12 或 /index.html/12）
+            const pathSegments = window.location.pathname.split('/');
+            for (let i = pathSegments.length - 1; i >= 0; i--) {
+                const num = parseInt(pathSegments[i], 10);
+                if (!isNaN(num) && num > 0) {
+                    return num;
+                }
+            }
+            return null;
+        }
+
+        function redirectToTableUrl(tableNumber) {
+            // 更新網址為乾淨的 /:tableNumber（例如 /12）
+            window.history.replaceState(null, '', `/${tableNumber}`);
+        }
+
+        // 獲取或設置桌號
+        const tableNumber = getTableNumberFromUrl();
+        if (!tableNumber) {
+            // 如果 URL 中沒有桌號，顯示輸入框讓用戶輸入
+            const userInput = prompt('請輸入桌號：');
+            if (userInput && !isNaN(userInput)) {
+                redirectToTableUrl(userInput);
+                document.getElementById('tableNumber').value = userInput;
+            } else {
+                // 如果用戶取消或輸入無效，重定向到首頁或顯示錯誤
+                alert('請輸入有效的桌號！');
+                window.location.href = '/';
+            }
+        } else {
+            // 如果 URL 中有桌號，直接設置到輸入框
+            document.getElementById('tableNumber').value = tableNumber;
+        }
+
+        // 禁用桌號輸入框
+        document.getElementById('tableNumber').readOnly = true;
+
+        // 修改所有需要帶桌號的連結
+        document.querySelectorAll('a').forEach(link => {
+            if (link.href.includes('user-order-status.html')) {
+                // 取得目前的桌號
+                const tableNumber = getTableNumberFromUrl();
+                if (tableNumber) {
+                    // 構建新的 URL，移除任何現有的路徑後綴
+                    const baseUrl = 'user-order-status.html';
+                    link.href = `/${baseUrl}/${tableNumber}`;
+                }
+            }
+        });
+
+        const orderForm = document.getElementById('orderForm');
+        const orderItems = document.getElementById('orderItems');
+        const menuList = document.getElementById('menuList');
+        const totalAmountDisplay = document.getElementById('totalAmount');
+
+        // 菜單 JSON 資料
+        const menuData = [
+            { category: "燒烤時蔬", items: [
+                { name: "黃金泡菜", price: 80 },
+                { name: "秘料烤洋芋", price: 80 },
+                { name: "慢火烤香菇", price: 80 },
+                { name: "虎皮烤青椒", price: 80 },
+                { name: "嚴選大櫛瓜", price: 120 }
+            ]},
+            { category: "職人燒烤", items: [
+                { name: "A5和牛莎朗", price: 360 },
+                { name: "香料牛肋條", price: 180 },
+                { name: "香草松板豬", price: 320 },
+                { name: "香蒜菲力牛", price: 360 }
+            ]},
+            { category: "特色經典", items: [
+                { name: "月亮蝦餅", price: 280 },
+                { name: "起司炸薯條", price: 180 },
+                { name: "泰式涼拌炸彈", price: 180 },
+                { name: "椰香紅咖哩雞", price: 210 },
+                { name: "椰香綠咖哩雞", price: 210 },
+                { name: "泰式打拋豬肉", price: 180 }
+            ]},
+            { category: "主食熱炒", items: [
+                { name: "清炒水蓮", price: 120 },
+                { name: "清炒高麗菜", price: 120 },
+                { name: "特色海鮮炒飯", price: 210 },
+                { name: "海鮮炒河粉", price: 210 }
+            ]}
+        ];
+
+        // 動態生成菜單
+        async function loadMenu() {
+            try {
+                const response = await fetch('/menu');
+                const menuData = await response.json();
+                menuList.innerHTML = '';
+                menuData.forEach(category => {
+                    const categoryDiv = document.createElement('div');
+                    categoryDiv.className = 'col-md-6 mb-4';
+                    categoryDiv.innerHTML = `
+                        <h3>${category.category}</h3>
+                        <ul class="list-group">
+                        ${category.items.map(item => `
+                            <li class="list-group-item d-flex justify-content-between align-items-center menu-item 
+                                ${item.status === '無' ? 'text-decoration-line-through text-muted' : ''}" 
+                                data-name="${item.name}" 
+                                data-price="${item.price}"
+                                data-status="${item.status}"
+                                ${item.status === '無' ? 'style="pointer-events: none;"' : ''}>
+                            ${item.name}
+                            <span>
+                                ${item.price}元
+                                <small class="ms-2 ${item.status === '無' ? 'text-danger' : 'text-success'}">
+                                (${item.status})
+                                </small>
+                            </span>
+                            </li>
+                        `).join('')}
+                        </ul>
+                    `;
+                    menuList.appendChild(categoryDiv);
+                });
+            } catch (error) {
+                console.error('載入菜單時發生錯誤:', error);
+            }
+        }
+
+        // 在頁面載入時呼叫 loadMenu 函數
+        loadMenu();
+        setInterval(loadMenu, 5000);
+
+        // 點擊菜單項目添加到訂單
+        menuList.addEventListener('click', (e) => {
+            let menuItem;
+            if (e.target && e.target.classList.contains('menu-item')) {
+                menuItem = e.target;
+            } else if (e.target && e.target.parentElement.classList.contains('menu-item')) {
+                menuItem = e.target.parentElement;
+            }
+
+            if (menuItem) {
+                const itemName = menuItem.getAttribute('data-name');
+                const itemPrice = menuItem.getAttribute('data-price');
+                addItemToOrder(itemName, itemPrice);
+            }
+        });
+
+        // 添加菜品到訂單
+        function addItemToOrder(name, price) {
+            // 檢查菜品是否已添加
+            const existingItem = orderItems.querySelector(`[data-name="${name}"]`);
+            if (existingItem) {
+                showToast('此菜品已添加', 'error');
+                return;
+            }
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'order-item fade-in';
+            itemDiv.setAttribute('data-name', name);
+            itemDiv.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="item-info me-2 text-truncate">
+                        <div class="item-name text-truncate">${name}</div>
+                        <div class="item-meta">
+                            <span class="text-muted small">價格：</span><span class="text-gold fw-bold">${price} 元</span>
+                        </div>
+                        <input type="hidden" name="name" value="${name}">
+                        <input type="hidden" name="price" value="${price}元">
+                    </div>
+                    <div class="item-action flex-shrink-0">
+                        <button type="button" class="btn btn-danger btn-sm btn-remove">移除</button>
+                    </div>
+                </div>
+            `;
+            orderItems.appendChild(itemDiv);
+
+            updateTotalAmount();
+        }
+
+        // 移除訂單項目
+        orderItems.addEventListener('click', (e) => {
+            if (e.target && e.target.classList.contains('btn-remove')) {
+                e.target.closest('.order-item').remove();
+                updateTotalAmount();
+            }
+        });
+
+        // 更新總金額
+        function updateTotalAmount() {
+            let totalAmount = 0;
+            const items = orderItems.querySelectorAll('.order-item');
+            items.forEach(item => {
+                const priceStr = item.querySelector('input[name="price"]').value;
+                const price = parseInt(priceStr.replace('元', ''), 10);
+                totalAmount += price;
+            });
+            totalAmountDisplay.textContent = totalAmount;
+        }
+
+        // 檢查是否允許提交訂單
+        async function checkCanSubmitOrder() {
+            try {
+                const response = await fetch('/get-submit-status');
+                const data = await response.json();
+                return data.canSubmitOrder;
+            } catch (error) {
+                console.error('無法獲取訂單提交狀態:', error);
+                return false; // 發生錯誤時預設不允許提交
+            }
+        }
+
+        // 提交訂單
+        // 修改提交訂單的處理函數
+        orderForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // 檢查是否允許提交訂單
+            const canSubmit = await checkCanSubmitOrder();
+            if (!canSubmit) {
+                showModal('目前暫停接受訂單，請稍後再試。', 'error');
+                return;
+            }
+
+            const submitBtn = orderForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span class="ms-2">提交中...</span>
+            `;
+
+            try {
+                const formData = new FormData(orderForm);
+                const tableNumber = formData.get('tableNumber');
+                const names = formData.getAll('name');
+
+                const orders = [];
+                for (let i = 0; i < names.length; i++) {
+                    const name = names[i].trim();
+                    const quantity = 1; // 每個菜品限一份
+                    const price = getPriceByName(name);
+
+                    if (name && price >= 0) {
+                        orders.push({ name, quantity, price });
+                    }
+                }
+
+                if (orders.length === 0) {
+                    showModal('請至少添加一個訂單項目', 'error');
+                    return;
+                }
+
+                const orderData = { tableNumber, orders };
+                const response = await fetch('/submit-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showModal(result.message, 'success');
+                    // 成功提交後清空表單
+                    orderForm.reset();
+                    orderItems.innerHTML = '';
+                    updateTotalAmount();
+                } else {
+                    showModal(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('錯誤:', error);
+                showModal('發生錯誤，請稍後再試', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '提交訂單';
+            }
+        });
+
+        function startSubmitStatusCheck() {
+            // 初始檢查
+            checkSubmitStatus();
+            // 每30秒檢查一次
+            setInterval(checkSubmitStatus, 10000);
+        }
+
+        startSubmitStatusCheck();
+
+        // 檢查並更新提交按鈕狀態
+        async function checkSubmitStatus() {
+            const submitBtn = orderForm.querySelector('button[type="submit"]');
+            const canSubmit = await checkCanSubmitOrder();
+            
+            submitBtn.disabled = !canSubmit;
+            if (!canSubmit) {
+                submitBtn.title = '目前暫停接受訂單';
+                submitBtn.style.opacity = '0.5';
+            } else {
+                submitBtn.title = '';
+                submitBtn.style.opacity = '1';
+            }
+        }
+
+        // 根據菜品名稱獲取價格
+        function getPriceByName(name) {
+            const prices = {};
+            menuData.forEach(category => {
+                category.items.forEach(item => {
+                    prices[item.name] = item.price;
+                });
+            });
+            return prices[name] || 0;
+        }
+
+        function showModal(message, type = 'success') {
+            const modalId = type === 'success' ? 'successModal' : 'errorModal';
+            const modalBodyId = type === 'success' ? 'successModalBody' : 'errorModalBody';
+            const modal = new bootstrap.Modal(document.getElementById(modalId));
+            document.getElementById(modalBodyId).textContent = message;
+            modal.show();
+
+            // 如果是成功提示，在關閉後重置表單
+            if (type === 'success') {
+                const modalElement = document.getElementById(modalId);
+                modalElement.addEventListener('hidden.bs.modal', () => {
+                    orderForm.reset();
+                    orderItems.innerHTML = '';
+                    totalAmountDisplay.textContent = '0';
+                });
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toastContainer = document.querySelector('.toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-body d-flex align-items-center">
+                    <span class="me-auto">${message}</span>
+                    <button type="button" class="btn-close ms-2" 
+                            onclick="this.closest('.toast').remove()">
+                    </button>
+                </div>
+            `;
+            toastContainer.appendChild(toast);
+            
+            // 自動關閉
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-20px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+});
+    </script>
+  </body>
+</html>
